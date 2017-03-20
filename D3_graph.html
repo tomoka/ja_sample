@@ -113,24 +113,24 @@ function animationStart(){
 	//折れ線グラフのアニメーション
 	// 線の位置は同じ数値を　.data(values).enter().select('polyline')
 	  polyline.enter().select('polyline').attr('points', arrData.map(function(d, i) {
-	      return ((i-1)*280/nn + 30) + ' ' + ((d-1) + 30);
+	      return (i*225/nn + 50) + ' ' + 150;
 	    }).join(','))
-	    .attr('stroke','white').attr('stroke-width',0).attr('fill','none')
+	    .attr('stroke','red').attr('stroke-width',1).attr('fill','none')
 	    
 	// 線の位置は同じ数値を
 	  polyline.transition().delay(100).duration(3000)
 	  			.attr('points', arrData.map(
 	  					function(d, i) {
-						      return (i*280/nn + 30) + ' ' + (d + 30);
+						      return (i*225/nn + 50) + ' ' + (d + 30);
 						    }).join(','))
-	    .attr('stroke','gray').attr('stroke-width',3).attr('fill','none')
+	    .attr('stroke','red').attr('stroke-width',1).attr('fill','none')
 	    
 	//線のアニメーション
 	line.enter().append("line").attr("class", "fillPink")
 					.attr('y1',160)
-					.attr('x1',function(d, i) {return ((i * 20) + 30);})
+					.attr('x1',function(d, i) {return ((i * 20) + 50);})
 					.attr('y2',160)
-					.attr('x2',function(d, i) {return (((i+1) * 20) + 30);})
+					.attr('x2',function(d, i) {return (((i+1) * 20) + 50);})
 
 					.attr('stroke','red')
 					.attr('stroke-width',1);
@@ -139,19 +139,19 @@ function animationStart(){
 	line.transition().duration(1200)
 					.attr('y1',
 						function(d, i) {
-							return (arrData[i] + 20);
+							return (arrData[i] + 50);
 							}
 						
 					)
-					.attr('x1',function(d, i) {return ((i * 20) + 40);})
+					.attr('x1',function(d, i) {return ((i * 20) + 50);})
 					.attr('y2',function(d, i) {
 						if ( arrData[i+1] ) { 
-							return arrData[i+1] + 40;
+							return arrData[i+1] + 50;
 							}else{
-							return arrData[i] + 40;
+							return arrData[i] + 50;
 							}
 					})
-					.attr('x2',function(d, i) {return (((i+1) * 20) + 40);})
+					.attr('x2',function(d, i) {return (((i+1) * 20) + 50);})
 					
 					.attr('stroke','red')
 					.attr('stroke-width',1);
