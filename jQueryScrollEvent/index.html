@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xml:lang="ja" lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+<title>jQuery Scroll Event</title>
+<link rel="stylesheet" href="http://black-flag.net/data/css/reset.css">
+<link rel="stylesheet" href="css/common.css">
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$(function(){
+	var setElm = $('.scrEvent'),
+	delayHeight = 100;
+
+	setElm.css({display:'block',opacity:'0'});
+	$('html,body').animate({scrollTop:0},1);
+
+	$(window).on('load scroll resize',function(){
+		setElm.each(function(){
+			var setThis = $(this),
+			elmTop = setThis.offset().top,
+			elmHeight = setThis.height(),
+			scrTop = $(window).scrollTop(),
+			winHeight = $(window).height();
+			if (scrTop > elmTop - winHeight + delayHeight && scrTop < elmTop + elmHeight){
+				setThis.stop().animate({opacity:'1'},500); // 【上】からスクロールしてきた時のイベント
+			} else if (scrTop < elmTop - winHeight + delayHeight && scrTop < elmTop + delayHeight){
+				setThis.stop().animate({opacity:'0'},500); // 【下】からスクロールしてきた時のイベント
+			}
+		});
+	});
+});
+</script>
+</head>
+
+<body>
+<h1>jQuery Scroll Event</h1>
+
+<div id="container">
+
+<div id="field1" class="scrEvent">ここは コンテンツエリア【1】 です</div><!--/#field1-->
+<div id="field2" class="scrEvent">ここは コンテンツエリア【2】 です</div><!--/#field2-->
+<div id="field3" class="scrEvent">ここは コンテンツエリア【3】 です</div><!--/#field3-->
+<div id="field4" class="scrEvent">ここは コンテンツエリア【4】 です</div><!--/#field4-->
+<div id="field5" class="scrEvent">ここは コンテンツエリア【5】 です</div><!--/#field5-->
+<div id="field6" class="scrEvent">ここは コンテンツエリア【6】 です</div><!--/#field6-->
+
+</div><!--/#container-->
+
+<h2>COPYRIGHT &copy; <a href="http://black-flag.net/">BLACKFLAG.NET</a> ALL RIGHTS RESERVED.</h2>
+</body>
+</html>

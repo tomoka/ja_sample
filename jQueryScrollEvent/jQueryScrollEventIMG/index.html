@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xml:lang="ja" lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+<title>jQuery Scroll Event</title>
+
+
+<link rel="stylesheet" href="css/common.css">
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+
+<script src="../../js/jquery-1.11.1.min.js"></script>
+<script>
+$(function(){
+	var setElm = $('.scrImg'),
+		delayHeight = 200;
+	
+		setElm.css({display:'block',opacity:'0'});
+		$('html,body').animate({scrollTop:0},1);
+	
+		$(window).on('load scroll resize',function(){
+			setElm.each(function(){
+				var setThis = $(this),
+						elmTop = setThis.offset().top,
+						elmHeight = setThis.height(),
+						scrTop = $(window).scrollTop(),
+						winHeight = $(window).height();
+				
+				if (scrTop > elmTop - winHeight + delayHeight && scrTop < elmTop + elmHeight){
+					setThis.stop().animate({left:'0',opacity:'1'},500);
+					} else if (scrTop < elmTop - winHeight + delayHeight && scrTop < elmTop + delayHeight){
+						setThis.stop().animate({right:'1000px',opacity:'0'},500);
+					}
+				});
+			});
+	});
+</script>
+</head>
+
+<body>
+<h1>jQuery Scroll Event</h1>
+
+<div id="container">
+
+<div id="field1"><img src="img/pink.png" class="scrImg" value="left:'-1000px',opacity:'1'"></div><!--/#field1-->
+<div id="field2"><img src="img/blue.png" class="scrImg" value="left:'-1000px',opacity:'1'"></div><!--/#field2-->
+<div id="field3"><img src="img/green.png" class="scrImg" value="left:'-1000px',opacity:'1'"></div><!--/#field3-->
+<div id="field4"><img src="img/yellow.png" class="scrImg" value="left:'-1000px',opacity:'1'"></div><!--/#field4-->
+<div id="field5"><img src="img/orange.png" class="scrImg" value="left:'-1000px',opacity:'1'"></div><!--/#field5-->
+<div id="field6"><img src="img/red.png" class="scrImg" value="left:'-1000px',opacity:'1'"></div><!--/#field6-->
+
+</div><!--/#container-->
+
+<h2>COPYRIGHT &copy; <a href="http://black-flag.net/">BLACKFLAG.NET</a> ALL RIGHTS RESERVED.</h2>
+</body>
+</html>

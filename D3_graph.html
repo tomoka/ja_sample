@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>D3.js　縦棒グラフを表示する</title>
+
+	<style>
+	svg{
+		width:320px;
+		height:340px;
+		border:2px solid black;
+	}
+	rect{fill:green;}
+	.fillPink{fill:pink;}
+
+
+	/*
+		縦棒グラフにラベルを表示する設定
+	*/
+	.barNum{
+		font-size:10px;
+		text-anchor:middle;
+	}
+	
+	.axis text{
+		font-family:sans-serif;
+		font-size:11px;
+	}
+	.axis path,
+	.axis line{
+		fill:none;
+		stroke:green;
+	}
+	.axisX line{
+		fill:none;
+		stroke:black;
+	}
+	.barName{
+		font-size:9px;
+		text-anchor:middle;
+	}
+	</style>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+
+</head>
+<body>
+	<h2>縦棒グラフを表示</h2>
+	<button onclick="animationStart()">アニメーションスタート</button>
+	<div style="position:reravel">
+	<svg id="graph" style="position:absolute"></svg>
+	<svg id="polyline" style="position:absolute"><polyline></polyline></svg>
+	<svg id="line" style="position:absolute"></svg>
+	</div>
+
+	<script>
+	var svgWidth  = 320  //svg要素の幅
+	var svgHeight = 320; //svg要素の高さ
+	var xOffset = 40;    //Ｘ座標のずれ具合
+	var yOffset = 10;    //Ｙ座標のずれ具合
+	var bar;             //棒グラフの棒の要素を格納
+	
+	var polyline;
+
+	var arrData = [120,80,150,200,110,260,220,40,100];
+	var nn = arrData.length;
+	var maxNum = 300;
+	var barWidth = 20;
+	var barMargin = 5;
+
+	//棒グラフを描画
+	bar = d3.select("#graph")
+		.selectAll("rect")
+		.data(arrData);
+	
+	polyline = d3.select("#polyline")
+		.selectAll("polyline")
+		.data(arrData);
+		
+	line = d3.select("#line")
+		.selectAll("line")
+		.data(arrData);
+
+function animationStart(){
+	
+	//棒グラフのアニメーション
+	bar.enter()
+	.append("rect")
+	.attr("class", "fillPink")
+
+	//アニメーションの初期値０を設定
+	.attr("height",0).attr("width",barWidth).attr("x",function(d,i){
+		return i * (barWidth + barMargin) + xOffset;
+	})
+	//グラフの一番下に座標を設定
+	.attr("y", svgHeight - yOffset )
+
+	//アニメーションをする
+	.transition().duration(1200)
+
+	/*
+		縦棒グラフの左側から
+		アニメーションを開始するように設定する
+	*/
+	.delay(function(d,i){
+		return i * 120;
+	})
+	.attr("y",function(d,i){  //Y座標を指定
+		return svgHeight - d - yOffset; //Y座標を計算
+	})
+	.attr("height",function(d,i){
+		return d;
+	})
+	
+	//折れ線グラフのアニメーション
+	// 線の位置は同じ数値を　.data(values).enter().select('polyline')
+	  polyline.enter().select('polyline').attr('points', arrData.map(function(d, i) {
+	      return ((i-1)*280/nn + 30) + ' ' + ((d-1) + 30);
+	    }).join(','))
+	    .attr('stroke','white').attr('stroke-width',0).attr('fill','none')
+	    
+	// 線の位置は同じ数値を
+	  polyline.transition().delay(100).duration(3000)
+	  			.attr('points', arrData.map(
+	  					function(d, i) {
+						      return (i*280/nn + 30) + ' ' + (d + 30);
+						    }).join(','))
+	    .attr('stroke','gray').attr('stroke-width',3).attr('fill','none')
+	    
+	//線のアニメーション
+	line.enter().append("line").attr("class", "fillPink")
+					.attr('y1',160)
+					.attr('x1',function(d, i) {return ((i * 20) + 30);})
+					.attr('y2',160)
+					.attr('x2',function(d, i) {return (((i+1) * 20) + 30);})
+
+					.attr('stroke','red')
+					.attr('stroke-width',1);
+				    
+    	// 線が伸びる
+	line.transition().duration(1200)
+					.attr('y1',
+						function(d, i) {
+							return (arrData[i] + 20);
+							}
+						
+					)
+					.attr('x1',function(d, i) {return ((i * 20) + 40);})
+					.attr('y2',function(d, i) {
+						if ( arrData[i+1] ) { 
+							return arrData[i+1] + 40;
+							}else{
+							return arrData[i] + 40;
+							}
+					})
+					.attr('x2',function(d, i) {return (((i+1) * 20) + 40);})
+					
+					.attr('stroke','red')
+					.attr('stroke-width',1);
+}
+
+	//棒グラフの数値を描画する
+	bar.enter()              //text要素を指定
+	.append("text")          //text要素を追加
+	.attr("class","barNum")  //CSSクラスを指定
+	.attr("x",function(d,i){ //Ｘ座標を指定
+		return i * (barWidth + barMargin) + 10 + xOffset;  //棒グラフの表示間隔に合わせる
+	})
+	.attr("y", svgHeight -5 - yOffset )//Ｙ座標を指定
+	.text(function(d,i){     //データを表示
+		return d;
+	});
+	
+      
+
+	//目盛り表示の為の縮尺表示
+	var yScale = d3.scaleLinear()
+				.domain([0,maxNum])
+				.range([maxNum,0]);
+
+	d3.select("#graph")
+	.append("g")
+	.attr("class","axis")
+	.attr("transform", "translate(" + xOffset + ", " + ((svgHeight - 300)- yOffset) + ")")
+	.call(
+		d3.axisLeft()
+		.scale(yScale)
+		
+	/*	.ticks(20)
+		.tickValues( [10.50,30.36,50,100,200,300] )
+		.tickFormat(d3.format(".2f"))
+	*/	
+	);
+
+	//横方向の線を表示する
+	d3.select("#graph")
+	.append("rect")
+	.attr("class","axisX")
+	.attr("width",300)
+	.attr("height",1)
+	.attr("transform","translate(" + xOffset + ", " + (svgHeight - yOffset ) + ")" );
+
+	//棒のラベルを表示する
+	bar.enter()
+	.append("text")
+	.attr("class","barName")
+	.attr("x",function(d,i){
+		return i * 25 + 10 + xOffset;
+	})
+	.attr("y", svgHeight - yOffset + 15 )
+
+	/*
+		下記のコードは、ラベルはtext要素を追加することで表示します。
+		棒グラフ内にデータを表示します。今回のデータセットには、
+		データ内にラベル名の情報は含まれていません。
+		以下のようにすると、配列に表示するラベルの文字を格納しておき
+		順場に応じて返すようにします。
+	*/
+	.text(function(d,i){
+		return ["A","B","C","D","E","F","G","H","I"][i];
+	});
+	</script>
+
+</body>
+</html>
